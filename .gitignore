@@ -1,0 +1,18 @@
+# Maven build output
+target/
+*.class
+
+# IDE files
+.idea/
+*.iml
+.eclipse/
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jenkins workspace leftovers
+*.log

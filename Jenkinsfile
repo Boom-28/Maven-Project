@@ -1,0 +1,103 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven-3.9'   // Must match the name configured in Jenkins > Global Tool Configuration
+        jdk   'JDK-11'      // Must match the name configured in Jenkins > Global Tool Configuration
+    }
+
+    environment {
+        APP_NAME    = 'calculator'
+        VERSION     = '1.0.0'
+        ARTIFACT    = "calculator-${VERSION}.jar"
+        // For email notifications (configure credentials in Jenkins)
+        EMAIL_TO    = 'your-email@example.com'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                echo '📥 Cloning source code from GitHub...'
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo '🔨 Building project with Maven...'
+                sh 'mvn clean compile -B'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo '🧪 Running JUnit 5 unit tests...'
+                sh 'mvn test -B'
+            }
+            post {
+                always {
+                    // Publish JUnit test results in Jenkins
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                echo '📦 Packaging application as JAR...'
+                sh 'mvn package -DskipTests -B'
+                echo "Artifact created: target/${env.ARTIFACT}"
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                echo '🗃️ Archiving build artifacts in Jenkins...'
+                archiveArtifacts artifacts: "target/${env.ARTIFACT}",
+                                 fingerprint: true,
+                                 onlyIfSuccessful: true
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ BUILD SUCCESS — ${env.APP_NAME} v${env.VERSION}"
+            mail to: "${env.EMAIL_TO}",
+                 subject: "✅ Jenkins Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: """
+Hello,
+
+Build SUCCEEDED for job: ${env.JOB_NAME}
+Build Number : #${env.BUILD_NUMBER}
+Artifact     : ${env.ARTIFACT}
+Build URL    : ${env.BUILD_URL}
+
+-- Jenkins CI/CD
+"""
+        }
+
+        failure {
+            echo "❌ BUILD FAILED — ${env.APP_NAME} v${env.VERSION}"
+            mail to: "${env.EMAIL_TO}",
+                 subject: "❌ Jenkins Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: """
+Hello,
+
+Build FAILED for job: ${env.JOB_NAME}
+Build Number : #${env.BUILD_NUMBER}
+Build URL    : ${env.BUILD_URL}
+
+Please check the console output for details.
+
+-- Jenkins CI/CD
+"""
+        }
+
+        always {
+            echo '🧹 Pipeline completed. Cleaning workspace...'
+            cleanWs()
+        }
+    }
+}
