@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven-3.9'   // Must match the name configured in Jenkins > Global Tool Configuration
-        jdk   'JDK-11'      // Must match the name configured in Jenkins > Global Tool Configuration
-    }
-
     environment {
         APP_NAME    = 'calculator'
         VERSION     = '1.0.0'
