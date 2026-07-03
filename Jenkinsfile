@@ -1,6 +1,6 @@
 pipeline {
     pipeline {
-    agent { label 'Worker' }
+    agent { label 'Worker1' }
 
     environment {
         APP_NAME    = 'calculator'
