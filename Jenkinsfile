@@ -6,7 +6,7 @@ pipeline {
         VERSION     = '1.0.0'
         ARTIFACT    = "calculator-${VERSION}.jar"
         // For email notifications (configure credentials in Jenkins)
-        EMAIL_TO    = 'your-email@example.com'
+        EMAIL_TO    = 'dhipesh5232690@example.com'
     }
 
     stages {
@@ -48,11 +48,11 @@ pipeline {
 
         stage('Archive Artifacts') {
             steps {
-                echo '🗃️ Archiving build artifacts in Jenkins...'
+                echo '📁 Archiving build artifacts in Jenkins...'
                 archiveArtifacts artifacts: "target/${env.ARTIFACT}",
-                                 fingerprint: true,
-                                 onlyIfSuccessful: true
+                                  fingerprint: true,
+                                  onlyIfSuccessful: true
             }
         }
     }
-
+}
