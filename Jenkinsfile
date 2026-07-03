@@ -1,5 +1,4 @@
 pipeline {
-    pipeline {
     agent { label 'Worker1' }
 
     environment {
@@ -7,7 +6,7 @@ pipeline {
         VERSION     = '1.0.0'
         ARTIFACT    = "calculator-${VERSION}.jar"
         // For email notifications (configure credentials in Jenkins)
-        EMAIL_TO    = 'dhipesh5232690@example.com'
+        EMAIL_TO    = 'your-email@example.com'
     }
 
     stages {
@@ -33,7 +32,6 @@ pipeline {
             }
             post {
                 always {
-                    // Publish JUnit test results in Jenkins
                     junit 'target/surefire-reports/*.xml'
                 }
             }
