@@ -73,4 +73,4 @@ Configure Gmail SMTP in Jenkins:
 ---
 *Built for the BEST DevOps Internship CI/CD lab.*
 
-welcome jazz
+welcome bikers 
